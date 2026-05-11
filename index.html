@@ -8,6 +8,10 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+       
+     <link rel="manifest" href="manifest.json">
+   <style>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body { background: #000; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -130,8 +134,14 @@
     </nav>
 
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyAwmqZpgzAsdwIURspaXeETp20ARbBR8lg", authDomain: "thtilok-store.firebaseapp.com", projectId: "thtilok-store" };
-        firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
+        const firebaseConfig = {
+    apiKey: "AIzaSyAwmqZpgzAsdwIURspaXeETp2OARbBR8lg",
+    authDomain: "thtilok-store.firebaseapp.com",
+    projectId: "thtilok-store",
+    messagingSenderId: "215927517073", // Idhi add cheyyi
+    appId: "1:215927517073:web:dc324c3ca380d0912ab430" // Idhi kuda add cheyyi
+};
+
         // --- PWA & NOTIFICATIONS INTEGRATION ---
 // --- ENHANCED PWA INSTALL LOGIC ---
 let deferredPrompt;
@@ -168,6 +178,22 @@ if ('serviceWorker' in navigator) {
         Notification.requestPermission();
     });
 }
+// Firestore nundi real-time notifications listen cheyyadam
+db.collection('notifications').orderBy('time', 'desc').limit(1)
+    .onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(change => {
+            if (change.type === "added") {
+                const data = change.doc.data();
+                // Browser notification choopinchadam
+                if (Notification.permission === "granted") {
+                    new Notification(data.title, {
+                        body: data.body,
+                        icon: 'Icon-192.png'
+                    });
+                }
+            }
+        });
+    });
 
         
         let currentUser = JSON.parse(localStorage.getItem('user')), allProducts = [], activeP = null, sS = '', sC = '', curQty = 1;
@@ -326,5 +352,3 @@ if ('serviceWorker' in navigator) {
     </script>
 </body>
 </html>
-
-                    
