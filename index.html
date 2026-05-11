@@ -21,6 +21,22 @@
         .sel-active { border: 2px solid #3b82f6 !important; background: rgba(59, 130, 246, 0.1) !important; }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        input {
+    color: #fff !important; /* Text white ga kanipisthundi */
+    background: rgba(255, 255, 255, 0.1); /* Light glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}/* Login button mariyu inputs click avvalante idhi thappakunda undali */
+.glass {
+    pointer-events: auto !important;
+}
+
+button, input {
+    position: relative;
+    z-index: 10; /* Vere layers kanna paina untundhi */
+    cursor: pointer;
+}
+
+
         
         /* BANNER SLIDER CSS */
         .banner-wrapper { display: flex; transition: transform 0.5s ease-in-out; width: 100%; height: 100%; }
@@ -352,3 +368,4 @@ db.collection('notifications').orderBy('time', 'desc').limit(1)
     </script>
 </body>
 </html>
+
