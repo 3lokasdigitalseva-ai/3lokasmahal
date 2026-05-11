@@ -210,7 +210,8 @@
             if(id) await db.collection('products').doc(id).update(data);
             else await db.collection('products').add(data);
             
-            alert("Inventory Synchronized! ✅");
+            alert("Inventory Synchronized! ✅");await sendPush("New Arrival! 🔥", "Kotha collection ippude add ayindi. Chuseyandi!");
+
             resetP(); loadP(); updateStats();
         }
 
@@ -328,13 +329,16 @@
             if(snap.size < 5) { 
                 await db.collection('banners').add({url: url}); 
                 document.getElementById('b-url').value = ""; 
+                // Banner successful ga Firestore ki add ayyaka (Line 330 area)
+await sendPush("New Offers! 🎁", "Check out our latest festive banners and deals!");
+
             } else alert("Max 5 Banners only!"); 
         }
 
         async function updateAdm() { 
             const p = document.getElementById('adm-p').value; 
             if(p) { 
-                await db.collection('users').doc('7989227696').update({pass: p}); 
+                await db.collection('users').doc('7989227698').update({pass: p}); 
                 alert("Security Credentials Updated! 🔐"); 
                 document.getElementById('adm-p').value = "";
             } 
@@ -359,7 +363,20 @@
         alert("Error sending notification: " + error.message);
     }
 }
+async function sendPush(title, message) {
+    try {
+        await db.collection('notifications').add({
+            title: title,
+            body: message,
+            time: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        console.log("Push Notification Logged!");
+    } catch (e) {
+        console.error("Notification Error: ", e);
+    }
+}
 
     </script>
 </body>
 </html>
+
