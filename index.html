@@ -74,10 +74,10 @@ button, input {
         <div class="w-full max-w-sm space-y-6 text-center">
             <h1 class="text-4xl font-black italic text-blue-600 uppercase">THRILOK HUB</h1>
             <div id="login-fields" class="space-y-4">
-                <input id="l-mobile" type="tel" placeholder="Mobile Number" class="w-full glass p-5 rounded-2xl outline-none border border-white/5">
-                <input id="l-pass" type="password" placeholder="Password" class="w-full glass p-5 rounded-2xl outline-none border border-white/5">
-                <button onclick="handleLogin()" class="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase shadow-lg shadow-blue-600/20">Login</button>
-                <p class="text-xs opacity-40 font-bold" onclick="toggleAuth(true)">Don't have account? <span class="text-blue-500 underline">Register</span></p>
+                <input id="l-mobile" type="tel" placeholder="Mobile Number" class="w-full glass p-5 rounded-2xl outline-none border border-white/5 relative z-[9001]">
+                <input id="l-pass" type="password" placeholder="Password" class="w-full glass p-5 rounded-2xl outline-none border border-white/5 relative z-[9001]">
+                <button onclick="handleLogin()" class="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase shadow-lg shadow-blue-600/20relative z-[9001]">Login</button>
+                <p class="text-xs opacity-40 font-bold relative z-[9001]" onclick="toggleAuth(true)">Don't have account? <span class="text-blue-500 underline">Register</span></p>
             </div>
             <div id="reg-fields" class="hidden space-y-4">
                 <input id="r-name" placeholder="Full Name" class="w-full glass p-5 rounded-2xl outline-none">
