@@ -33,6 +33,17 @@
     </style>
 </head>
 <body class="pb-32">
+    <div id="pwa-banner" style="display:none;" class="fixed top-0 left-0 w-full bg-blue-600 text-white p-4 z-[100] flex justify-between items-center shadow-lg">
+    <div class="flex items-center gap-3">
+        <img src="icon-192.png" class="w-10 h-10 rounded-lg">
+        <div>
+            <p class="text-xs font-bold uppercase tracking-widest">3lokasmahal</p>
+            <p class="text-[10px] opacity-80">Install for faster experience</p>
+        </div>
+    </div>
+    <button onclick="triggerInstall()" class="bg-white text-blue-600 px-6 py-2 rounded-full font-black uppercase text-[10px]">Install</button>
+</div>
+
 
     <div id="success-overlay">
         <div class="tick-circle shadow-[0_0_50px_rgba(34,197,94,0.4)]"><i class="fa-solid fa-check text-4xl"></i></div>
@@ -122,23 +133,32 @@
         const firebaseConfig = { apiKey: "AIzaSyAwmqZpgzAsdwIURspaXeETp20ARbBR8lg", authDomain: "thtilok-store.firebaseapp.com", projectId: "thtilok-store" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
         // --- PWA & NOTIFICATIONS INTEGRATION ---
+// --- ENHANCED PWA INSTALL LOGIC ---
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    // Nuvvu install button ekkadaina petti unte (e.g. id="install-btn") ikkada show cheyachu
-    const installBtn = document.getElementById('install-btn');
-    if(installBtn) installBtn.style.display = 'block';
+    // Website lo "Install App" ane banner or button unte automatic ga show chesthundhi
+    const installBanner = document.getElementById('pwa-banner');
+    if(installBanner) installBanner.style.display = 'flex';
 });
 
-// Install function (idi button onclick ki pettu)
-async function installApp() {
+async function triggerInstall() {
     if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') deferredPrompt = null;
+        if (outcome === 'accepted') {
+            console.log('User installed the app');
+        }
+        deferredPrompt = null;
+        // Install ayyaka banner ni hide chesthunnam
+        const installBanner = document.getElementById('pwa-banner');
+        if(installBanner) installBanner.style.display = 'none';
+    } else {
+        alert("App is already installed or browser not supporting!");
     }
 }
+
 
 // Service Worker for Push Notifications
 if ('serviceWorker' in navigator) {
@@ -306,3 +326,5 @@ if ('serviceWorker' in navigator) {
     </script>
 </body>
 </html>
+
+                    
