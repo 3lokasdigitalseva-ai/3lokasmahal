@@ -184,6 +184,73 @@ async function triggerInstall() {
         alert("App is already installed or browser not supporting!");
     }
 }
+// --- LOGIN & AUTH LOGIC ---
+function toggleAuth(isRegister) {
+    document.getElementById('login-fields').classList.toggle('hidden', isRegister);
+    document.getElementById('reg-fields').classList.toggle('hidden', !isRegister);
+}
+
+async function handleLogin() {
+    const mobile = document.getElementById('l-mobile').value;
+    const pass = document.getElementById('l-pass').value;
+
+    if (!mobile || !pass) {
+        alert("Mobile and Password enter cheyyandi!");
+        return;
+    }
+
+    try {
+        const userDoc = await db.collection('users').doc(mobile).get();
+        if (userDoc.exists && userDoc.data().pass === pass) {
+            localStorage.setItem('user', JSON.stringify({ id: mobile, ...userDoc.data() }));
+            document.getElementById('auth-sec').style.display = 'none';
+            alert("Login Success! ✅");
+            location.reload();
+        } else {
+            alert("Invalid Credentials! ❌");
+        }
+    } catch (error) {
+        alert("Error: " + error.message);
+    }
+}
+// --- ORDER CONFIRMATION LOGIC ---
+async function confirmFinalOrder(type) {
+    const utrField = document.getElementById('c-utr');
+    const utrValue = utrField ? utrField.value.trim() : "";
+
+    if (type === 'ONLINE') {
+        // Strict Validation: Empty unna leda 12 digits lekapoyina block chesthundhi
+        if (utrValue === "") {
+            alert("Please enter your 12-Digit UTR Number to confirm payment! ⚠️");
+            if(utrField) utrField.focus();
+            return; 
+        }
+        
+        if (utrValue.length !== 12) {
+            alert("Invalid UTR! 12-Digit Transaction ID thappakunda enter cheyyali. ❌");
+            return; 
+        }
+    }
+
+    // Validation success ayitheనే ikkada nundi Firebase logic start avthundi
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) { alert("Please login first!"); return; }
+
+        await db.collection('orders').add({
+            userId: user.id,
+            paymentMethod: type,
+            utr: utrValue,
+            status: 'Pending',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("Order Placed Successfully! ✅");
+        location.reload();
+    } catch (error) {
+        alert("Error: " + error.message);
+    }
+}
 
 
 // Service Worker for Push Notifications
@@ -368,4 +435,3 @@ db.collection('notifications').orderBy('time', 'desc').limit(1)
     </script>
 </body>
 </html>
-
