@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -265,19 +265,7 @@ async function confirmFinalOrder(type) {
     if (type === 'ONLINE') {
         // Strict Validation: Empty unna leda 12 digits lekapoyina block chesthundhi
         if (utrValue === "") {
-            alert("Please enter your 12-Digit UTR Number to confirm payment! ⚠️");
-            if(utrField) utrField.focus();
-            return; 
-        }
-        
-        if (utrValue.length !== 12) {
-            alert("Invalid UTR! 12-Digit Transaction ID thappakunda enter cheyyali. ❌");
-            return; 
-        }
-    }
-
-    // Validation success ayitheనే ikkada nundi Firebase logic start avthundi
-    try {
+           
         const user = JSON.parse(localStorage.getItem('user'));
         if (!user) { alert("Please login first!"); return; }
 
@@ -479,3 +467,5 @@ db.collection('notifications').orderBy('time', 'desc').limit(1)
     </script>
 </body>
 </html>
+                    
+                        
