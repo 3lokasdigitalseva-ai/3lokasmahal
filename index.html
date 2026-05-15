@@ -317,19 +317,7 @@ db.collection('notifications').orderBy('time', 'desc').limit(1)
         window.onload = () => { if(currentUser) { document.getElementById('auth-sec').classList.add('hidden'); loadStore(); } };
 
         function toggleAuth(r) { document.getElementById('login-fields').classList.toggle('hidden', r); document.getElementById('reg-fields').classList.toggle('hidden', !r); }
-        async function handleLogin() {
-            const m = document.getElementById('l-mobile').value, p = document.getElementById('l-pass').value;
-            const doc = await db.collection('users').doc(m).get();
-            if(doc.exists && doc.data().pass === p) { currentUser = doc.data(); localStorage.setItem('user', JSON.stringify(currentUser)); location.reload(); }
-            else alert("Error! Please check Mobile/Password");
-        }
-        async function handleRegister() {
-            const n = document.getElementById('r-name').value, m = document.getElementById('r-mobile').value, p = document.getElementById('r-pass').value;
-            if(!n || !m || !p) return alert("Fill all details");
-            await db.collection('users').doc(m).set({ name: n, mobile: m, pass: p, role: 'user' });
-            alert("Success! Please Login."); toggleAuth(false);
-        }
-        function logout() { localStorage.removeItem('user'); location.reload(); }
+        
 
         async function loadStore() {
             const snap = await db.collection('products').get();
@@ -467,5 +455,4 @@ db.collection('notifications').orderBy('time', 'desc').limit(1)
     </script>
 </body>
 </html>
-                    
-                        
+            
