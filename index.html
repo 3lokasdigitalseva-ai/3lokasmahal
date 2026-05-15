@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -186,9 +186,26 @@ async function triggerInstall() {
 }
 // --- LOGIN & AUTH LOGIC ---
 function toggleAuth(isRegister) {
-    document.getElementById('login-fields').classList.toggle('hidden', isRegister);
-    document.getElementById('reg-fields').classList.toggle('hidden', !isRegister);
+    const loginFields = document.getElementById('login-fields');
+    const regFields = document.getElementById('reg-fields');
+    const authSec = document.getElementById('auth-sec');
+
+    if (isRegister) {
+        loginFields.classList.add('hidden');
+        regFields.classList.remove('hidden');
+    } else {
+        loginFields.classList.remove('hidden');
+        regFields.classList.add('hidden');
+    }
+
+    // Clicks block avvakunda force chesthunnam
+    if (authSec) {
+        authSec.style.display = 'flex';
+        authSec.style.zIndex = '10000';
+        authSec.style.pointerEvents = 'auto';
+    }
 }
+
 
 async function handleLogin() {
     const mobile = document.getElementById('l-mobile').value;
@@ -213,6 +230,33 @@ async function handleLogin() {
         alert("Error: " + error.message);
     }
 }
+async function handleRegister() {
+    const mobile = document.getElementById('r-mobile').value.trim();
+    const pass = document.getElementById('r-pass').value.trim();
+    const name = document.getElementById('r-name').value.trim();
+
+    if (!mobile || !pass || !name) {
+        alert("Please enter Name, Mobile, and Password! ⚠️");
+        return;
+    }
+
+    try {
+        // User ni Firestore lo save chesthunnam
+        await db.collection('users').doc(mobile).set({
+            id: mobile,
+            name: name,
+            pass: pass,
+            role: 'user',
+            joinedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("Account Created Successfully! ✅ Ippudu Login avvandi.");
+        toggleAuth(false); // Login screen ki pampisthundi
+    } catch (error) {
+        alert("Error: " + error.message);
+    }
+}
+
 // --- ORDER CONFIRMATION LOGIC ---
 async function confirmFinalOrder(type) {
     const utrField = document.getElementById('c-utr');
