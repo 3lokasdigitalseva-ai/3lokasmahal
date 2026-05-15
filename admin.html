@@ -21,6 +21,16 @@
     </style>
 </head>
 <body class="pb-24">
+<div id="admin-auth-sec" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center p-8">
+    <div class="w-full max-w-sm space-y-6 text-center">
+        <h1 class="text-4xl font-black italic text-blue-600 uppercase">ADMIN LOGIN</h1>
+        <div class="space-y-4">
+            <input id="admin-user" type="text" placeholder="Admin Username" class="w-full glass p-5 rounded-2xl outline-none border border-white/5 relative z-[10000]">
+            <input id="admin-pass" type="password" placeholder="Admin Password" class="w-full glass p-5 rounded-2xl outline-none border border-white/5 relative z-[10000]">
+            <button onclick="handleAdminLogin()" class="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase relative z-[10000]">Login Admin</button>
+        </div>
+    </div>
+</div>
 
     <div class="sticky top-0 z-50 glass p-5 flex justify-between items-center border-b border-white/5">
         <div class="flex items-center gap-3">
@@ -172,7 +182,7 @@
 
             <div class="bg-red-500/10 p-8 rounded-[2.5rem] space-y-4 border border-red-500/20">
                 <h2 class="text-lg font-black italic uppercase text-red-500">Security</h2>
-                <p class="text-[10px] opacity-60">Update Admin mobile password for 7989227696</p>
+                <p class="text-[10px] opacity-60">Update Admin mobile password for 7989227698</p>
                 <input id="adm-p" placeholder="Enter New Password" class="w-full p-4 rounded-2xl outline-none bg-black/40">
                 <button onclick="updateAdm()" class="w-full bg-red-600 py-4 rounded-2xl font-black uppercase tracking-widest">Update Security</button>
             </div>
@@ -182,6 +192,31 @@
     <script>
         const firebaseConfig = { apiKey: "AIzaSyAwmqZpgzAsdwIURspaXeETp20ARbBR8lg", authDomain: "thtilok-store.firebaseapp.com", projectId: "thtilok-store" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
+// Firebase initialization tharuvatha...
+
+// 1. Auth Check (Auto-run) - Page load avvagane login check chesthundhi
+(function() {
+    const isAdmin = localStorage.getItem('adminLoggedIn');
+    const authSec = document.getElementById('admin-auth-sec');
+    if (isAdmin === 'true' && authSec) {
+        authSec.style.display = 'none';
+    }
+})();
+
+// 2. Admin Login Function - Button click chesinappudu work avthundi
+function handleAdminLogin() {
+    const user = document.getElementById('admin-user').value;
+    const pass = document.getElementById('admin-pass').value;
+
+    // Nuvvu login avvadaniki default details
+    if (user === "admin" && pass === "7989") { 
+        localStorage.setItem('adminLoggedIn', 'true');
+        alert("Welcome Admin! ✅");
+        location.reload(); 
+    } else {
+        alert("Invalid Admin Credentials! ❌");
+    }
+}
 
         function showSection(s) {
             document.querySelectorAll('section').forEach(x => x.classList.add('hidden'));
@@ -345,6 +380,14 @@ await sendPush("New Offers! 🎁", "Check out our latest festive banners and dea
         }
 
         showSection('p');
+        async function sendPush(t, b) {
+    await db.collection('notifications').add({
+        title: t,
+        body: b,
+        time: Date.now() // Ikkada idi thappakunda undali
+    });
+}
+
         async function sendPush() {
     const t = document.getElementById('n-t').value;
     const b = document.getElementById('n-b').value;
@@ -379,4 +422,3 @@ async function sendPush(title, message) {
     </script>
 </body>
 </html>
-
