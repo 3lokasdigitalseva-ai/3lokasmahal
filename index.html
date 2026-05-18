@@ -9,35 +9,35 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
        
-     <link rel="manifest" href="manifest.json">
-   <style>
-
+    <link rel="manifest" href="manifest.json">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        
+        /* --- AUTH CLICKS & Z-INDEX FIX --- */
+        #auth-sec {
+            pointer-events: auto !important;
+            z-index: 10000 !important;
+        }
+        #auth-sec input, #auth-sec button {
+            position: relative;
+            z-index: 10001 !important;
+            pointer-events: auto !important;
+        }
+
         body { background: #000; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); pointer-events: auto !important; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .nav-item.active { color: #3b82f6; opacity: 1 !important; }
         .sel-active { border: 2px solid #3b82f6 !important; background: rgba(59, 130, 246, 0.1) !important; }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
-        input {
-    color: #fff !important; /* Text white ga kanipisthundi */
-    background: rgba(255, 255, 255, 0.1); /* Light glass effect */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}/* Login button mariyu inputs click avvalante idhi thappakunda undali */
-.glass {
-    pointer-events: auto !important;
-}
-
-button, input {
-    position: relative;
-    z-index: 10; /* Vere layers kanna paina untundhi */
-    cursor: pointer;
-}
-
-
         
+        input {
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
         /* BANNER SLIDER CSS */
         .banner-wrapper { display: flex; transition: transform 0.5s ease-in-out; width: 100%; height: 100%; }
         .banner-slide { min-width: 100%; height: 100%; object-fit: cover; }
@@ -48,22 +48,23 @@ button, input {
         
         #success-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; }
         .tick-circle { width: 80px; height: 80px; border-radius: 50%; background: #22c55e; display: flex; align-items: center; justify-content: center; animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
         @keyframes scaleUp { from { transform: scale(0); } to { transform: scale(1); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body class="pb-32">
-    <div id="pwa-banner" style="display:none;" class="fixed top-0 left-0 w-full bg-blue-600 text-white p-4 z-[100] flex justify-between items-center shadow-lg">
-    <div class="flex items-center gap-3">
-        <img src="icon-192.png" class="w-10 h-10 rounded-lg">
-        <div>
-            <p class="text-xs font-bold uppercase tracking-widest">3lokasmahal</p>
-            <p class="text-[10px] opacity-80">Install for faster experience</p>
-        </div>
-    </div>
-    <button onclick="triggerInstall()" class="bg-white text-blue-600 px-6 py-2 rounded-full font-black uppercase text-[10px]">Install</button>
-</div>
 
+    <div id="pwa-banner" style="display:none;" class="fixed top-0 left-0 w-full bg-blue-600 text-white p-4 z-[100] flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-3">
+            <img src="icon-192.png" class="w-10 h-10 rounded-lg">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-widest">3lokasmahal</p>
+                <p class="text-[10px] opacity-80">Install for faster experience</p>
+            </div>
+        </div>
+        <button onclick="triggerInstall()" class="bg-white text-blue-600 px-6 py-2 rounded-full font-black uppercase text-[10px]">Install</button>
+    </div>
 
     <div id="success-overlay">
         <div class="tick-circle shadow-[0_0_50px_rgba(34,197,94,0.4)]"><i class="fa-solid fa-check text-4xl"></i></div>
@@ -74,16 +75,16 @@ button, input {
         <div class="w-full max-w-sm space-y-6 text-center">
             <h1 class="text-4xl font-black italic text-blue-600 uppercase">THRILOK HUB</h1>
             <div id="login-fields" class="space-y-4">
-                <input id="l-mobile" type="tel" placeholder="Mobile Number" class="w-full glass p-5 rounded-2xl outline-none border border-white/5 relative z-[9001]">
-                <input id="l-pass" type="password" placeholder="Password" class="w-full glass p-5 rounded-2xl outline-none border border-white/5 relative z-[9001]">
-                <button onclick="handleLogin()" class="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase shadow-lg shadow-blue-600/20relative z-[9001]">Login</button>
-                <p class="text-xs opacity-40 font-bold relative z-[9001]" onclick="toggleAuth(true)">Don't have account? <span class="text-blue-500 underline">Register</span></p>
+                <input id="l-mobile" type="tel" placeholder="Mobile Number" class="w-full glass p-5 rounded-2xl outline-none">
+                <input id="l-pass" type="password" placeholder="Password" class="w-full glass p-5 rounded-2xl outline-none">
+                <button type="button" onclick="handleLogin()" class="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase relative z-[10005] pointer-events-auto shadow-lg shadow-blue-600/20">Login</button>
+                <p class="text-xs opacity-40 font-bold" onclick="toggleAuth(true)">Don't have account? <span class="text-blue-500 underline">Register</span></p>
             </div>
             <div id="reg-fields" class="hidden space-y-4">
                 <input id="r-name" placeholder="Full Name" class="w-full glass p-5 rounded-2xl outline-none">
                 <input id="r-mobile" type="tel" placeholder="Mobile" class="w-full glass p-5 rounded-2xl outline-none">
-                <input id="r-pass" type="password" placeholder="Password" class="w-full glass p-5 rounded-2xl outline-none">
-                <button onclick="handleRegister()" class="w-full bg-emerald-600 py-5 rounded-2xl font-black uppercase">Create Account</button>
+                <input id="r-pass" type="password" placeholder="Set Password" class="w-full glass p-5 rounded-2xl outline-none">
+                <button type="button" onclick="handleRegister()" class="w-full bg-emerald-600 py-5 rounded-2xl font-black uppercase relative z-[10005] pointer-events-auto shadow-lg shadow-emerald-600/20">Create Account</button>
                 <p class="text-xs opacity-40 font-bold" onclick="toggleAuth(false)">Back to Login</p>
             </div>
         </div>
@@ -102,7 +103,6 @@ button, input {
             <div id="banner-wrapper" class="banner-wrapper"></div>
             <div id="banner-dots" class="absolute bottom-4 left-0 right-0 flex justify-center gap-2"></div>
         </div>
-        
         <div class="flex gap-3 overflow-x-auto no-scrollbar" id="cat-scroll"></div>
         <div id="p-grid" class="grid grid-cols-2 gap-4"></div>
     </main>
@@ -139,7 +139,7 @@ button, input {
                 <input id="c-utr" placeholder="12-Digit UTR" class="w-full bg-white/10 p-4 rounded-xl text-center outline-none font-black tracking-widest">
                 <button onclick="confirmFinalOrder('ONLINE')" class="w-full bg-emerald-600 py-4 rounded-xl font-black uppercase italic">Confirm Order</button>
             </div>
-            <button onclick="document.getElementById('checkout-modal').classList.add('hidden')" class="w-full text-center opacity-30 text-xs font-bold uppercase">Back</button>
+            <button onclick="document.getElementById('checkout-modal').classList.add('hidden'); document.getElementById('pay-options').classList.remove('hidden'); document.getElementById('utr-sec').classList.add('hidden');" class="w-full text-center opacity-30 text-xs font-bold uppercase">Back</button>
         </div>
     </div>
 
@@ -151,174 +151,72 @@ button, input {
 
     <script>
         const firebaseConfig = {
-    apiKey: "AIzaSyAwmqZpgzAsdwIURspaXeETp2OARbBR8lg",
-    authDomain: "thtilok-store.firebaseapp.com",
-    projectId: "thtilok-store",
-    messagingSenderId: "215927517073", // Idhi add cheyyi
-    appId: "1:215927517073:web:dc324c3ca380d0912ab430" // Idhi kuda add cheyyi
-};
+            apiKey: "AIzaSyAwmqZpgzAsdwIURspaXeETp2OARbBR8lg",
+            authDomain: "thtilok-store.firebaseapp.com",
+            projectId: "thtilok-store",
+            messagingSenderId: "215927517073",
+            appId: "1:215927517073:web:dc324c3ca380d0912ab430"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        // --- PWA & NOTIFICATIONS INTEGRATION ---
-// --- ENHANCED PWA INSTALL LOGIC ---
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    // Website lo "Install App" ane banner or button unte automatic ga show chesthundhi
-    const installBanner = document.getElementById('pwa-banner');
-    if(installBanner) installBanner.style.display = 'flex';
-});
-
-async function triggerInstall() {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            console.log('User installed the app');
-        }
-        deferredPrompt = null;
-        // Install ayyaka banner ni hide chesthunnam
-        const installBanner = document.getElementById('pwa-banner');
-        if(installBanner) installBanner.style.display = 'none';
-    } else {
-        alert("App is already installed or browser not supporting!");
-    }
-}
-// --- LOGIN & AUTH LOGIC ---
-function toggleAuth(isRegister) {
-    const loginFields = document.getElementById('login-fields');
-    const regFields = document.getElementById('reg-fields');
-    const authSec = document.getElementById('auth-sec');
-
-    if (isRegister) {
-        loginFields.classList.add('hidden');
-        regFields.classList.remove('hidden');
-    } else {
-        loginFields.classList.remove('hidden');
-        regFields.classList.add('hidden');
-    }
-
-    // Clicks block avvakunda force chesthunnam
-    if (authSec) {
-        authSec.style.display = 'flex';
-        authSec.style.zIndex = '10000';
-        authSec.style.pointerEvents = 'auto';
-    }
-}
-
-
-async function handleLogin() {
-    const mobile = document.getElementById('l-mobile').value;
-    const pass = document.getElementById('l-pass').value;
-
-    if (!mobile || !pass) {
-        alert("Mobile and Password enter cheyyandi!");
-        return;
-    }
-
-    try {
-        const userDoc = await db.collection('users').doc(mobile).get();
-        if (userDoc.exists && userDoc.data().pass === pass) {
-            localStorage.setItem('user', JSON.stringify({ id: mobile, ...userDoc.data() }));
-            document.getElementById('auth-sec').style.display = 'none';
-            alert("Login Success! ✅");
-            location.reload();
-        } else {
-            alert("Invalid Credentials! ❌");
-        }
-    } catch (error) {
-        alert("Error: " + error.message);
-    }
-}
-async function handleRegister() {
-    const mobile = document.getElementById('r-mobile').value.trim();
-    const pass = document.getElementById('r-pass').value.trim();
-    const name = document.getElementById('r-name').value.trim();
-
-    if (!mobile || !pass || !name) {
-        alert("Please enter Name, Mobile, and Password! ⚠️");
-        return;
-    }
-
-    try {
-        // User ni Firestore lo save chesthunnam
-        await db.collection('users').doc(mobile).set({
-            id: mobile,
-            name: name,
-            pass: pass,
-            role: 'user',
-            joinedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        alert("Account Created Successfully! ✅ Ippudu Login avvandi.");
-        toggleAuth(false); // Login screen ki pampisthundi
-    } catch (error) {
-        alert("Error: " + error.message);
-    }
-}
-
-// --- ORDER CONFIRMATION LOGIC ---
-async function confirmFinalOrder(type) {
-    const utrField = document.getElementById('c-utr');
-    const utrValue = utrField ? utrField.value.trim() : "";
-
-    if (type === 'ONLINE') {
-        // Strict Validation: Empty unna leda 12 digits lekapoyina block chesthundhi
-        if (utrValue === "") {
-           
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (!user) { alert("Please login first!"); return; }
-
-        await db.collection('orders').add({
-            userId: user.id,
-            paymentMethod: type,
-            utr: utrValue,
-            status: 'Pending',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        alert("Order Placed Successfully! ✅");
-        location.reload();
-    } catch (error) {
-        alert("Error: " + error.message);
-    }
-}
-
-
-// Service Worker for Push Notifications
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('firebase-messaging-sw.js').then(reg => {
-        console.log("SW Registered");
-        // Push permission permission aduguthundi
-        Notification.requestPermission();
-    });
-}
-// Firestore nundi real-time notifications listen cheyyadam
-db.collection('notifications').orderBy('time', 'desc').limit(1)
-    .onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(change => {
-            if (change.type === "added") {
-                const data = change.doc.data();
-                // Browser notification choopinchadam
-                if (Notification.permission === "granted") {
-                    new Notification(data.title, {
-                        body: data.body,
-                        icon: 'Icon-192.png'
-                    });
-                }
-            }
-        });
-    });
-
-        
+        // --- GLOBAL VARIABLES ---
         let currentUser = JSON.parse(localStorage.getItem('user')), allProducts = [], activeP = null, sS = '', sC = '', curQty = 1;
         let bannerIndex = 0, bannerCount = 0;
 
-        window.onload = () => { if(currentUser) { document.getElementById('auth-sec').classList.add('hidden'); loadStore(); } };
+        // --- PWA LOGIC ---
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwa-banner').style.display = 'flex';
+        });
 
-        function toggleAuth(r) { document.getElementById('login-fields').classList.toggle('hidden', r); document.getElementById('reg-fields').classList.toggle('hidden', !r); }
-        
+        async function triggerInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                document.getElementById('pwa-banner').style.display = 'none';
+            }
+        }
 
+        // --- AUTH LOGIC ---
+        function toggleAuth(isRegister) {
+            document.getElementById('login-fields').classList.toggle('hidden', isRegister);
+            document.getElementById('reg-fields').classList.toggle('hidden', !isRegister);
+        }
+
+        async function handleLogin() {
+            const mobile = document.getElementById('l-mobile').value.trim();
+            const pass = document.getElementById('l-pass').value.trim();
+            if (!mobile || !pass) return alert("Enter credentials!");
+
+            try {
+                const doc = await db.collection('users').doc(mobile).get();
+                if (doc.exists && doc.data().pass === pass) {
+                    localStorage.setItem('user', JSON.stringify({ id: mobile, ...doc.data() }));
+                    location.reload();
+                } else { alert("Invalid credentials!"); }
+            } catch (e) { alert(e.message); }
+        }
+
+        async function handleRegister() {
+            const mobile = document.getElementById('r-mobile').value.trim();
+            const pass = document.getElementById('r-pass').value.trim();
+            const name = document.getElementById('r-name').value.trim();
+            if (!mobile || !pass || !name) return alert("Fill all fields!");
+
+            try {
+                await db.collection('users').doc(mobile).set({ id: mobile, name, pass, role: 'user' });
+                alert("Account Created! Login now.");
+                toggleAuth(false);
+            } catch (e) { alert(e.message); }
+        }
+
+        function logout() { localStorage.removeItem('user'); location.reload(); }
+
+        // --- STORE LOGIC ---
         async function loadStore() {
             const snap = await db.collection('products').get();
             allProducts = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
@@ -327,54 +225,54 @@ db.collection('notifications').orderBy('time', 'desc').limit(1)
             const cats = ['All', ...new Set(allProducts.map(p => p.category))];
             document.getElementById('cat-scroll').innerHTML = cats.map(c => `<button onclick="filterCat('${c}', this)" class="cat-btn px-5 py-2 rounded-xl glass text-[10px] font-black uppercase shrink-0 ${c==='All'?'bg-blue-600':''}">${c}</button>`).join('');
             
-            // LOAD BANNERS WITH AUTO SLIDE
             db.collection('banners').onSnapshot(s => {
                 const banners = s.docs.map(d => d.data().url);
                 bannerCount = banners.length;
                 document.getElementById('banner-wrapper').innerHTML = banners.map(url => `<img src="${url}" class="banner-slide">`).join('');
-                document.getElementById('banner-dots').innerHTML = banners.map((_, i) => `<div class="w-1.5 h-1.5 rounded-full ${i===0?'bg-white':'bg-white/20'} transition-all dot-id-${i}"></div>`).join('');
+                document.getElementById('banner-dots').innerHTML = banners.map((_, i) => `<div class="w-1.5 h-1.5 rounded-full ${i===0?'bg-white':'bg-white/20'} dot-id-${i}"></div>`).join('');
                 startBannerSlide();
             });
         }
 
         function startBannerSlide() {
             setInterval(() => {
+                if(bannerCount === 0) return;
                 bannerIndex = (bannerIndex + 1) % bannerCount;
                 const wrapper = document.getElementById('banner-wrapper');
                 if(wrapper) {
                     wrapper.style.transform = `translateX(-${bannerIndex * 100}%)`;
-                    // Update Dots
                     document.querySelectorAll('#banner-dots div').forEach((dot, i) => {
                         dot.classList.toggle('bg-white', i === bannerIndex);
                         dot.classList.toggle('bg-white/20', i !== bannerIndex);
-                        dot.classList.toggle('w-4', i === bannerIndex); // Active dot width increase
                     });
                 }
             }, 3000);
         }
 
         function render(list, target) {
-            document.getElementById(target).innerHTML = list.map(p => `<div class="glass p-3 rounded-[1.5rem]" onclick="openProduct('${p.id}')"><img src="${p.img1}" class="w-full aspect-square object-cover rounded-xl mb-2"><h3 class="font-black text-[10px] uppercase truncate opacity-60">${p.name}</h3><p class="text-blue-500 font-black text-xs">₹${p.price}</p></div>`).join('');
+            document.getElementById(target).innerHTML = list.map(p => `
+                <div class="glass p-3 rounded-[1.5rem]" onclick="openProduct('${p.id}')">
+                    <img src="${p.img1}" class="w-full aspect-square object-cover rounded-xl mb-2">
+                    <h3 class="font-black text-[10px] uppercase truncate opacity-60">${p.name}</h3>
+                    <p class="text-blue-500 font-black text-xs">₹${p.price}</p>
+                </div>`).join('');
         }
 
         function openProduct(id) {
             activeP = allProducts.find(x => x.id === id); if(!activeP) return;
             sS = ''; sC = ''; curQty = 1;
-            const isWish = (JSON.parse(localStorage.getItem('wish_'+currentUser.mobile) || '[]')).includes(id);
+            const isWish = (JSON.parse(localStorage.getItem('wish_'+currentUser.id) || '[]')).includes(id);
             const images = [activeP.img1, activeP.img2, activeP.img3].filter(img => img);
             
             document.getElementById('modal-content').innerHTML = `
-                <div class="slider-container no-scrollbar">
-                    ${images.map(img => `<img src="${img}" class="slider-item glass">`).join('')}
-                </div>
-                <div class="flex justify-center gap-1.5 mt-3">${images.map(() => `<div class="w-1.5 h-1.5 bg-white/20 rounded-full"></div>`).join('')}</div>
+                <div class="slider-container no-scrollbar">${images.map(img => `<img src="${img}" class="slider-item glass">`).join('')}</div>
                 <div class="flex justify-between items-center mt-6">
                     <h2 class="text-2xl font-black uppercase italic">${activeP.name}</h2>
                     <i class="fa-${isWish?'solid':'regular'} fa-heart text-2xl ${isWish?'text-red-500':'opacity-20'}" onclick="toggleWish('${id}')"></i>
                 </div>
                 <p class="text-3xl font-black text-blue-500">₹${activeP.price}</p>
-                <div class="flex gap-2">${(activeP.sizes||"").split(',').map(s => `<button onclick="setS('${s}', this)" class="sz-btn glass px-4 py-2 rounded-xl text-xs font-bold border border-white/5">${s}</button>`).join('')}</div>
-                <div class="flex gap-2">${(activeP.colors||"").split(',').map(c => `<button onclick="setC('${c}', this)" class="cl-btn glass px-4 py-2 rounded-xl text-xs font-bold border border-white/5">${c}</button>`).join('')}</div>
+                <div class="flex flex-wrap gap-2">${(activeP.sizes||"").split(',').map(s => `<button onclick="setS('${s}', this)" class="sz-btn glass px-4 py-2 rounded-xl text-xs font-bold">${s}</button>`).join('')}</div>
+                <div class="flex flex-wrap gap-2">${(activeP.colors||"").split(',').map(c => `<button onclick="setC('${c}', this)" class="cl-btn glass px-4 py-2 rounded-xl text-xs font-bold">${c}</button>`).join('')}</div>
                 <div class="glass p-5 rounded-2xl flex justify-between items-center">
                     <div class="flex gap-4 items-center"><button onclick="updQty(-1)" class="w-8 h-8 glass rounded-full font-bold">-</button><span id="qty-box" class="font-black text-lg">1</span><button onclick="updQty(1)" class="w-8 h-8 glass rounded-full font-bold">+</button></div>
                     <p id="total-box" class="font-black text-xl text-blue-500">₹${activeP.price}</p>
@@ -388,26 +286,23 @@ db.collection('notifications').orderBy('time', 'desc').limit(1)
         function setC(c, b) { document.querySelectorAll('.cl-btn').forEach(x => x.classList.remove('sel-active')); b.classList.add('sel-active'); sC = c; }
         function closeModal() { document.getElementById('product-modal').classList.add('hidden'); }
 
-        function toggleWish(id) {
-            let w = JSON.parse(localStorage.getItem('wish_'+currentUser.mobile) || '[]');
-            w = w.includes(id) ? w.filter(x => x !== id) : [...w, id];
-            localStorage.setItem('wish_'+currentUser.mobile, JSON.stringify(w)); openProduct(id);
-        }
-
         async function initOrder(m) {
-            if(!sS || !sC) return alert("Please select Size and Color");
+            if(!sS || !sC) return alert("Select Size and Color!");
             if(m === 'ONLINE') {
                 const s = await db.collection('settings').doc('app').get();
                 window.location.assign(`upi://pay?pa=${s.data().upi}&pn=Thrilok&am=${curQty*activeP.price}&cu=INR`);
-                document.getElementById('pay-options').classList.add('hidden'); document.getElementById('utr-sec').classList.remove('hidden');
+                document.getElementById('pay-options').classList.add('hidden'); 
+                document.getElementById('utr-sec').classList.remove('hidden');
             } else { confirmFinalOrder('COD'); }
         }
 
         async function confirmFinalOrder(m) {
-            const utr = document.getElementById('c-utr').value || 'N/A';
+            const utr = document.getElementById('c-utr').value.trim();
+            if(m === 'ONLINE' && utr.length < 12) return alert("Enter 12-Digit UTR!");
+
             await db.collection('orders').add({
-                uid: currentUser.mobile, product: activeP.name, price: activeP.price * curQty, qty: curQty, size: sS, color: sC,
-                payMethod: m, status: 'Pending', utr: utr,
+                uid: currentUser.id, product: activeP.name, price: activeP.price * curQty, qty: curQty, size: sS, color: sC,
+                payMethod: m, status: 'Pending', utr: utr || 'COD',
                 customer: { n: document.getElementById('c-name').value, p: document.getElementById('c-phone').value, a: document.getElementById('c-addr').value },
                 time: firebase.firestore.FieldValue.serverTimestamp()
             });
@@ -417,42 +312,27 @@ db.collection('notifications').orderBy('time', 'desc').limit(1)
             setTimeout(() => { document.getElementById('success-overlay').style.display = 'none'; showSection('orders'); }, 2000);
         }
 
-        async function cancelOrder(id) {
-            if(confirm("Confirm to cancel order?")) {
-                await db.collection('orders').doc(id).delete();
-                alert("Order Cancelled.");
-            }
-        }
-
         function showSection(id) {
             document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
             document.getElementById(id + '-sec').classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('nav-'+id).classList.add('active');
-
-            if(id === 'wishlist') render(allProducts.filter(p => (JSON.parse(localStorage.getItem('wish_'+currentUser.mobile)||'[]')).includes(p.id)), 'wish-grid');
-            if(id === 'orders') {
-                db.collection('orders').onSnapshot(snap => {
-                    const myOrders = snap.docs.filter(doc => doc.data().uid === currentUser.mobile);
-                    document.getElementById('orders-list').innerHTML = myOrders.map(doc => `
-                        <div class="glass p-5 rounded-2xl border border-white/5 space-y-4">
-                            <div class="flex justify-between">
-                                <div><h4 class="font-black text-[11px] uppercase text-blue-500">${doc.data().product}</h4><p class="text-[9px] opacity-40">Total: ₹${doc.data().price}</p></div>
-                                <span class="text-[8px] font-black uppercase text-blue-500 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">${doc.data().status}</span>
-                            </div>
-                            ${doc.data().status === 'Pending' ? `<button onclick="cancelOrder('${doc.id}')" class="w-full bg-red-500/10 text-red-500 py-3 rounded-xl text-[9px] font-black uppercase border border-red-500/10">Cancel Order</button>` : ''}
-                        </div>`).join('') || '<p class="text-center opacity-20 py-20 uppercase font-black text-xs">No Gear Found</p>';
-                });
-            }
+            if(id === 'orders') loadOrders();
         }
 
-        function filterCat(c, b) {
-            document.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('bg-blue-600'));
-            if(b) b.classList.add('bg-blue-600');
-            render(c==='All'?allProducts:allProducts.filter(p=>p.category===c), 'p-grid');
+        function loadOrders() {
+            db.collection('orders').where('uid', '==', currentUser.id).onSnapshot(snap => {
+                document.getElementById('orders-list').innerHTML = snap.docs.map(doc => `
+                    <div class="glass p-5 rounded-2xl border border-white/5 space-y-4">
+                        <div class="flex justify-between">
+                            <div><h4 class="font-black text-[11px] uppercase text-blue-500">${doc.data().product}</h4><p class="text-[9px] opacity-40">₹${doc.data().price}</p></div>
+                            <span class="text-[8px] font-black uppercase text-blue-500 bg-blue-500/10 px-3 py-1 rounded-full">${doc.data().status}</span>
+                        </div>
+                    </div>`).join('') || '<p class="text-center opacity-20 py-20">No Orders Found</p>';
+            });
         }
-        function searchProduct() { render(allProducts.filter(p=>p.name.toLowerCase().includes(document.getElementById('p-search').value.toLowerCase())), 'p-grid'); }
+
+        window.onload = () => { if(currentUser) { document.getElementById('auth-sec').classList.add('hidden'); loadStore(); } };
     </script>
 </body>
 </html>
-            
