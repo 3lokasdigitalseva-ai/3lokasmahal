@@ -21,13 +21,14 @@
     </style>
 </head>
 <body class="pb-24">
+
 <div id="admin-auth-sec" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center p-8">
     <div class="w-full max-w-sm space-y-6 text-center">
         <h1 class="text-4xl font-black italic text-blue-600 uppercase">ADMIN LOGIN</h1>
         <div class="space-y-4">
-            <input id="admin-user" type="text" placeholder="Admin Username" class="w-full glass p-5 rounded-2xl outline-none border border-white/5 relative z-[10000]">
-            <input id="admin-pass" type="password" placeholder="Admin Password" class="w-full glass p-5 rounded-2xl outline-none border border-white/5 relative z-[10000]">
-            <button onclick="handleAdminLogin()" class="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase relative z-[10000]">Login Admin</button>
+            <input id="admin-user" type="text" placeholder="Admin Username" class="w-full glass p-5 rounded-2xl outline-none">
+            <input id="admin-pass" type="password" placeholder="Admin Password" class="w-full glass p-5 rounded-2xl outline-none">
+            <button onclick="handleAdminLogin()" class="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase">Login Admin</button>
         </div>
     </div>
 </div>
@@ -42,16 +43,14 @@
                 <p class="text-[8px] opacity-40 font-bold uppercase tracking-[0.2em]">Management Console</p>
             </div>
         </div>
-        <button onclick="location.reload()" class="bg-white/5 w-10 h-10 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10">
-            <i class="fa-solid fa-rotate-right text-xs"></i>
-        </button>
+        <button onclick="logoutAdmin()" class="bg-red-500/10 px-4 py-2 rounded-xl text-[10px] font-black uppercase text-red-500 border border-red-500/20">Logout</button>
     </div>
 
     <div class="max-w-4xl mx-auto p-5 space-y-8">
         
         <div class="grid grid-cols-3 gap-4" id="stats-grid">
             <div class="glass p-4 rounded-3xl border-l-4 border-blue-500">
-                <p class="text-[9px] font-bold opacity-40 uppercase">Total Orders</p>
+                <p class="text-[9px] font-bold opacity-40 uppercase">Orders</p>
                 <h3 id="stat-orders" class="text-xl font-black mt-1">0</h3>
             </div>
             <div class="glass p-4 rounded-3xl border-l-4 border-emerald-500">
@@ -68,92 +67,55 @@
             <button onclick="showSection('p')" id="btn-p" class="tab-active flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">Products</button>
             <button onclick="showSection('o')" id="btn-o" class="flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">Orders</button>
             <button onclick="showSection('s')" id="btn-s" class="flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">Setup</button>
-            <button onclick="showSection('n')" id="btn-n" class="flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all text-blue-400">Push Alert</button>
-
+            <button onclick="showSection('n')" id="btn-n" class="flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all text-blue-400">Alerts</button>
         </nav>
-        <section id="sec-n" class="hidden space-y-6">
-    <div class="glass p-8 rounded-[2.5rem] space-y-4 border border-blue-500/20 shadow-2xl shadow-blue-500/10">
-        <div class="flex justify-between items-center mb-2">
-            <h2 class="text-lg font-black italic uppercase">Send <span class="text-blue-500">Push Alert</span></h2>
-        </div>
-        <input id="n-t" placeholder="Alert Title (e.g. New Offer!)" class="w-full p-4 rounded-2xl bg-black/40 border border-white/10 outline-none">
-        <textarea id="n-b" placeholder="Message content..." class="w-full p-4 rounded-2xl bg-black/40 border border-white/10 outline-none h-24"></textarea>
-        <button onclick="sendPush()" class="w-full bg-blue-600 py-5 rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-blue-600/30">Broadcast Now 🚀</button>
-    </div>
-</section>
 
+        <section id="sec-n" class="hidden space-y-6">
+            <div class="glass p-8 rounded-[2.5rem] space-y-4 border border-blue-500/20 shadow-2xl">
+                <h2 class="text-lg font-black italic uppercase">Send <span class="text-blue-500">Push Alert</span></h2>
+                <input id="n-t" placeholder="Alert Title" class="w-full p-4 rounded-2xl bg-black/40 outline-none">
+                <textarea id="n-b" placeholder="Message content..." class="w-full p-4 rounded-2xl bg-black/40 h-24 outline-none"></textarea>
+                <button onclick="manualPush()" class="w-full bg-blue-600 py-5 rounded-[2rem] font-black uppercase tracking-widest">Broadcast Now 🚀</button>
+            </div>
+        </section>
 
         <section id="sec-p" class="space-y-6">
             <div class="glass p-8 rounded-[2.5rem] space-y-5 shadow-2xl">
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="text-lg font-black italic uppercase">Add / Edit <span class="text-blue-500">Product</span></h2>
-                    <button onclick="resetP()" class="text-[10px] font-bold opacity-40 hover:opacity-100">CLEAR FORM</button>
+                    <button onclick="resetP()" class="text-[10px] font-bold opacity-40 hover:opacity-100">CLEAR</button>
                 </div>
-                
                 <input id="p-id" type="hidden">
-                <input id="p-n" placeholder="Product Title (e.g. Premium T-Shirt)" class="w-full p-4 rounded-2xl outline-none">
-                
+                <input id="p-n" placeholder="Product Title" class="w-full p-4 rounded-2xl outline-none">
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-bold opacity-40 ml-2">PRICE (₹)</label>
-                        <input id="p-pr" type="number" placeholder="999" class="w-full p-4 rounded-2xl outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-bold opacity-40 ml-2">STOCK QTY</label>
-                        <input id="p-q" type="number" placeholder="50" class="w-full p-4 rounded-2xl outline-none">
-                    </div>
+                    <input id="p-pr" type="number" placeholder="Price (₹)" class="w-full p-4 rounded-2xl outline-none">
+                    <input id="p-q" type="number" placeholder="Stock Qty" class="w-full p-4 rounded-2xl outline-none">
                 </div>
-
-                <div class="space-y-2">
-                    <label class="text-[9px] font-bold opacity-40 ml-2">IMAGE URLS (PRIMARY + 2 EXTRA)</label>
-                    <input id="p-i1" placeholder="Main Image URL" class="w-full p-4 rounded-2xl outline-none mb-2">
-                    <div class="grid grid-cols-2 gap-4">
-                        <input id="p-i2" placeholder="Image 2" class="w-full p-4 rounded-2xl outline-none">
-                        <input id="p-i3" placeholder="Image 3" class="w-full p-4 rounded-2xl outline-none">
-                    </div>
-                </div>
-
+                <input id="p-i1" placeholder="Main Image URL" class="w-full p-4 rounded-2xl outline-none">
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-bold opacity-40 ml-2">SIZES (Comma Separated)</label>
-                        <input id="p-sz" placeholder="S, M, L, XL" class="w-full p-4 rounded-2xl outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-bold opacity-40 ml-2">COLORS (Comma Separated)</label>
-                        <input id="p-cl" placeholder="Black, White, Blue" class="w-full p-4 rounded-2xl outline-none">
-                    </div>
+                    <input id="p-i2" placeholder="Image 2 URL" class="w-full p-4 rounded-2xl outline-none">
+                    <input id="p-i3" placeholder="Image 3 URL" class="w-full p-4 rounded-2xl outline-none">
                 </div>
-
-                <div class="space-y-2">
-                    <label class="text-[9px] font-bold opacity-40 ml-2">PRODUCT CATEGORY</label>
-                    <select id="p-c" class="w-full p-4 rounded-2xl outline-none appearance-none">
-                        <option value="Electronics">Electronics</option>
-                        <option value="Fashion">Fashion</option>
-                        <option value="Smartphones">Smartphones</option>
-                        <option value="Footwear">Footwear</option>
-                        <option value="Accessories">Accessories</option>
-                        <option value="Home Decor">Home Decor</option>
-                        <option value="Gadgets">Gadgets</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-4">
+                    <input id="p-sz" placeholder="Sizes (S,M,L)" class="w-full p-4 rounded-2xl outline-none">
+                    <input id="p-cl" placeholder="Colors (Red,Blue)" class="w-full p-4 rounded-2xl outline-none">
                 </div>
-
-                <button onclick="saveP()" class="w-full bg-blue-600 py-5 rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-blue-600/20 active:scale-95 transition-all">
-                    Push to Live Store
-                </button>
+                <select id="p-c" class="w-full p-4 rounded-2xl outline-none">
+                    <option value="Electronics">Electronics</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Footwear">Footwear</option>
+                    <option value="Gadgets">Gadgets</option>
+                </select>
+                <button onclick="saveP()" class="w-full bg-blue-600 py-5 rounded-[2rem] font-black uppercase tracking-widest">Push to Live Store</button>
             </div>
-
-            <div class="space-y-4">
-                <h3 class="text-xs font-black uppercase opacity-30 tracking-[0.3em] ml-2">Inventory List</h3>
-                <div id="p-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
+            <div id="p-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </section>
 
         <section id="sec-o" class="hidden space-y-6">
-            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-                <button onclick="loadO('All')" class="bg-white/5 px-6 py-3 rounded-xl text-[10px] font-bold border border-white/5 whitespace-nowrap">All Orders</button>
-                <button onclick="loadO('Pending')" class="bg-amber-500/10 text-amber-500 px-6 py-3 rounded-xl text-[10px] font-bold border border-amber-500/20 whitespace-nowrap">Pending</button>
-                <button onclick="loadO('Accepted')" class="bg-emerald-500/10 text-emerald-500 px-6 py-3 rounded-xl text-[10px] font-bold border border-emerald-500/20 whitespace-nowrap">Accepted</button>
-                <button onclick="loadO('Cancelled')" class="bg-red-500/10 text-red-500 px-6 py-3 rounded-xl text-[10px] font-bold border border-red-500/20 whitespace-nowrap">Cancelled</button>
+            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2" id="ord-filters">
+                <button onclick="loadO('All')" class="bg-white/5 px-6 py-3 rounded-xl text-[10px] font-bold">All</button>
+                <button onclick="loadO('Pending')" class="bg-amber-500/10 text-amber-500 px-6 py-3 rounded-xl text-[10px] font-bold">Pending</button>
+                <button onclick="loadO('Accepted')" class="bg-emerald-500/10 text-emerald-500 px-6 py-3 rounded-xl text-[10px] font-bold">Accepted</button>
             </div>
             <div id="ord-list" class="space-y-4"></div>
         </section>
@@ -161,63 +123,48 @@
         <section id="sec-s" class="hidden space-y-8">
             <div class="glass p-8 rounded-[2.5rem] space-y-6">
                 <h2 class="text-lg font-black italic uppercase">Store <span class="text-amber-500">Settings</span></h2>
-                <div class="space-y-4">
-                    <input id="s-name" placeholder="Store Name (e.g. Thrilok Hub)" class="w-full p-4 rounded-2xl outline-none">
-                    <input id="s-upi" placeholder="Your UPI ID (e.g. user@ybl)" class="w-full p-4 rounded-2xl outline-none">
-                    <button onclick="saveS()" class="w-full bg-emerald-600 py-4 rounded-2xl font-black uppercase tracking-widest">Update Store Profile</button>
-                </div>
+                <input id="s-name" placeholder="Store Name" class="w-full p-4 rounded-2xl outline-none">
+                <input id="s-upi" placeholder="UPI ID" class="w-full p-4 rounded-2xl outline-none">
+                <button onclick="saveS()" class="w-full bg-emerald-600 py-4 rounded-2xl font-black uppercase">Update Profile</button>
             </div>
-
-            <div class="glass p-8 rounded-[2.5rem] space-y-6">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-lg font-black italic uppercase">Home <span class="text-blue-500">Banners</span></h2>
-                    <span class="text-[9px] opacity-40 font-bold">MAX 5</span>
-                </div>
+            <div class="glass p-8 rounded-[2.5rem] space-y-4">
+                <h2 class="text-lg font-black italic uppercase">Banners</h2>
                 <div class="flex gap-2">
-                    <input id="b-url" placeholder="Paste Image URL" class="flex-1 p-4 rounded-2xl outline-none">
+                    <input id="b-url" placeholder="Banner URL" class="flex-1 p-4 rounded-2xl outline-none">
                     <button onclick="addB()" class="bg-blue-600 px-8 rounded-2xl font-black uppercase text-[10px]">Add</button>
                 </div>
-                <div id="b-list" class="grid gap-3 mt-4"></div>
-            </div>
-
-            <div class="bg-red-500/10 p-8 rounded-[2.5rem] space-y-4 border border-red-500/20">
-                <h2 class="text-lg font-black italic uppercase text-red-500">Security</h2>
-                <p class="text-[10px] opacity-60">Update Admin mobile password for 7989227698</p>
-                <input id="adm-p" placeholder="Enter New Password" class="w-full p-4 rounded-2xl outline-none bg-black/40">
-                <button onclick="updateAdm()" class="w-full bg-red-600 py-4 rounded-2xl font-black uppercase tracking-widest">Update Security</button>
+                <div id="b-list" class="grid gap-3"></div>
             </div>
         </section>
     </div>
 
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyAwmqZpgzAsdwIURspaXeETp20ARbBR8lg", authDomain: "thtilok-store.firebaseapp.com", projectId: "thtilok-store" };
-        firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
-// Firebase initialization tharuvatha...
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAwmqZpgzAsdwIURspaXeETp20ARbBR8lg", 
+            authDomain: "thtilok-store.firebaseapp.com", 
+            projectId: "thtilok-store" 
+        };
+        firebase.initializeApp(firebaseConfig); 
+        const db = firebase.firestore();
 
-// 1. Auth Check (Auto-run) - Page load avvagane login check chesthundhi
-(function() {
-    const isAdmin = localStorage.getItem('adminLoggedIn');
-    const authSec = document.getElementById('admin-auth-sec');
-    if (isAdmin === 'true' && authSec) {
-        authSec.style.display = 'none';
-    }
-})();
+        // Admin Auth Logic
+        (function() {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                document.getElementById('admin-auth-sec').style.display = 'none';
+            }
+        })();
 
-// 2. Admin Login Function - Button click chesinappudu work avthundi
-function handleAdminLogin() {
-    const user = document.getElementById('admin-user').value;
-    const pass = document.getElementById('admin-pass').value;
+        function handleAdminLogin() {
+            const user = document.getElementById('admin-user').value;
+            const pass = document.getElementById('admin-pass').value;
+            if (user === "admin" && pass === "7989") { 
+                localStorage.setItem('adminLoggedIn', 'true');
+                location.reload(); 
+            } else { alert("Access Denied!"); }
+        }
+        function logoutAdmin() { localStorage.removeItem('adminLoggedIn'); location.reload(); }
 
-    // Nuvvu login avvadaniki default details
-    if (user === "admin" && pass === "7989") { 
-        localStorage.setItem('adminLoggedIn', 'true');
-        alert("Welcome Admin! ✅");
-        location.reload(); 
-    } else {
-        alert("Invalid Admin Credentials! ❌");
-    }
-}
-
+        // Navigation
         function showSection(s) {
             document.querySelectorAll('section').forEach(x => x.classList.add('hidden'));
             document.querySelectorAll('nav button').forEach(x => x.classList.remove('tab-active'));
@@ -226,6 +173,7 @@ function handleAdminLogin() {
             if(s==='p') loadP(); if(s==='o') loadO('All'); if(s==='s') loadS();
         }
 
+        // Product Logic
         async function saveP() {
             const id = document.getElementById('p-id').value;
             const data = {
@@ -238,30 +186,30 @@ function handleAdminLogin() {
                 sizes: document.getElementById('p-sz').value,
                 colors: document.getElementById('p-cl').value,
                 category: document.getElementById('p-c').value,
-                updated: Date.now()
+                time: firebase.firestore.FieldValue.serverTimestamp()
             };
-            if(!data.name || !data.price) return alert("Basics like Name & Price are required!");
+            if(!data.name || !data.price) return alert("Fill Name & Price!");
             
             if(id) await db.collection('products').doc(id).update(data);
-            else await db.collection('products').add(data);
-            
-            alert("Inventory Synchronized! ✅");await sendPush("New Arrival! 🔥", "Kotha collection ippude add ayindi. Chuseyandi!");
-
-            resetP(); loadP(); updateStats();
+            else {
+                await db.collection('products').add(data);
+                autoPush("New Arrival! 🔥", `${data.name} is now available in store!`);
+            }
+            alert("Inventory Updated!"); resetP();
         }
 
         function loadP() {
             db.collection('products').onSnapshot(snap => {
                 document.getElementById('stat-products').innerText = snap.size;
                 document.getElementById('p-list').innerHTML = snap.docs.map(doc => `
-                <div class="glass p-5 rounded-[2rem] flex gap-4 items-center border border-white/5">
-                    <img src="${doc.data().img1}" class="w-20 h-20 object-cover rounded-2xl shadow-lg">
-                    <div class="flex-1 overflow-hidden">
-                        <h4 class="font-black text-xs uppercase truncate">${doc.data().name}</h4>
-                        <p class="text-blue-500 font-bold text-[10px] mt-1">₹${doc.data().price} • Stock: ${doc.data().stock}</p>
-                        <div class="flex gap-4 mt-3">
-                            <button onclick="editP('${doc.id}')" class="text-[9px] font-black text-blue-400 uppercase tracking-widest">Edit</button>
-                            <button onclick="delP('${doc.id}')" class="text-[9px] font-black text-red-500 uppercase tracking-widest">Delete</button>
+                <div class="glass p-5 rounded-[2rem] flex gap-4 items-center">
+                    <img src="${doc.data().img1}" class="w-16 h-16 object-cover rounded-xl">
+                    <div class="flex-1">
+                        <h4 class="font-black text-xs uppercase">${doc.data().name}</h4>
+                        <p class="text-blue-500 font-bold text-[10px]">₹${doc.data().price}</p>
+                        <div class="flex gap-3 mt-2">
+                            <button onclick="editP('${doc.id}')" class="text-[9px] font-black text-blue-400">Edit</button>
+                            <button onclick="delP('${doc.id}')" class="text-[9px] font-black text-red-500">Delete</button>
                         </div>
                     </div>
                 </div>`).join('');
@@ -280,12 +228,13 @@ function handleAdminLogin() {
             document.getElementById('p-sz').value = d.sizes;
             document.getElementById('p-cl').value = d.colors;
             document.getElementById('p-c').value = d.category;
-            window.scrollTo({top: 150, behavior: 'smooth'});
+            showSection('p');
         }
 
-        function delP(id) { if(confirm("Permanently remove this product?")) db.collection('products').doc(id).delete(); }
+        function delP(id) { if(confirm("Delete Product?")) db.collection('products').doc(id).delete(); }
         function resetP() { document.getElementById('p-id').value = ""; document.querySelectorAll('#sec-p input').forEach(i => i.value = ""); }
 
+        // Orders Logic
         function loadO(filter) {
             db.collection('orders').onSnapshot(snap => {
                 let list = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
@@ -298,127 +247,71 @@ function handleAdminLogin() {
                 if(filter !== 'All') list = list.filter(o => o.status === filter);
                 
                 document.getElementById('ord-list').innerHTML = list.map(o => `
-                <div class="glass p-6 rounded-[2.5rem] space-y-4 border border-white/5 order-card shadow-xl">
-                    <div class="flex justify-between items-center">
-                        <div class="flex gap-3 items-center">
-                            <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center font-black text-[10px] text-blue-500">#</div>
-                            <div>
-                                <h4 class="font-black text-xs uppercase italic">${o.product}</h4>
-                                <p class="text-[9px] opacity-30 font-bold uppercase tracking-widest">${o.payMethod} • ₹${o.price}</p>
-                            </div>
-                        </div>
-                        <span class="text-[9px] font-black uppercase px-4 py-1.5 rounded-full ${o.status==='Cancelled'?'bg-red-500/10 text-red-500':'bg-blue-500/10 text-blue-500'} border border-current/20">${o.status}</span>
+                <div class="glass p-5 rounded-[2rem] border border-white/5">
+                    <div class="flex justify-between">
+                        <h4 class="font-black text-xs uppercase italic">${o.product}</h4>
+                        <span class="text-[9px] font-black uppercase px-3 py-1 rounded-full bg-blue-500/10 text-blue-500">${o.status}</span>
                     </div>
-                    
-                    <div class="bg-black/40 p-5 rounded-[1.5rem] space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] font-black text-white/80 uppercase tracking-tighter">${o.customer.n}</span>
-                            <a href="tel:${o.customer.p}" class="text-[10px] font-black text-blue-400 underline">${o.customer.p}</a>
-                        </div>
-                        <p class="text-[10px] opacity-50 font-medium leading-relaxed">${o.customer.a}</p>
-                        <div class="pt-2 flex justify-between border-t border-white/5 mt-2">
-                            <span class="text-[9px] font-bold text-amber-500 uppercase">UTR: ${o.utr}</span>
-                            <span class="text-[9px] font-bold text-white opacity-40 uppercase">S: ${o.size} | C: ${o.color}</span>
-                        </div>
+                    <div class="mt-3 text-[10px] opacity-60">
+                        <p>Customer: ${o.customer.n} (${o.customer.p})</p>
+                        <p>Address: ${o.customer.a}</p>
+                        <p class="text-amber-500 font-bold">UTR: ${o.utr}</p>
                     </div>
-
-                    <div class="flex gap-3 pt-2">
+                    <div class="flex gap-2 mt-4">
                         ${o.status==='Pending' ? `
-                            <button onclick="updO('${o.id}', 'Accepted')" class="flex-1 bg-emerald-600 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-600/20">Accept</button>
-                            <button onclick="updO('${o.id}', 'Cancelled')" class="flex-1 bg-red-600/10 text-red-500 border border-red-500/20 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">Reject</button>
-                        ` : `
-                            <button onclick="delO('${o.id}')" class="w-full bg-white/5 py-3 rounded-xl text-[9px] font-bold opacity-30 uppercase">Archive Order</button>
-                        `}
+                            <button onclick="updO('${o.id}', 'Accepted')" class="flex-1 bg-emerald-600 py-3 rounded-xl text-[9px] font-black">Accept</button>
+                            <button onclick="updO('${o.id}', 'Cancelled')" class="flex-1 bg-red-600/20 text-red-500 py-3 rounded-xl text-[9px] font-black">Reject</button>
+                        ` : `<button onclick="delO('${o.id}')" class="w-full bg-white/5 py-2 rounded-lg text-[9px] opacity-30">Archive</button>`}
                     </div>
                 </div>`).join('');
             });
         }
 
         async function updO(id, s) { await db.collection('orders').doc(id).update({status: s}); }
-        async function delO(id) { if(confirm("Archive this record?")) await db.collection('orders').doc(id).delete(); }
+        async function delO(id) { if(confirm("Archive Order?")) await db.collection('orders').doc(id).delete(); }
 
-        async function saveS() { 
-            await db.collection('settings').doc('app').set({ name: document.getElementById('s-name').value, upi: document.getElementById('s-upi').value }); 
-            alert("Store Identity Updated! 🏪"); 
-        }
-
+        // Setup & Banners
+        async function saveS() { await db.collection('settings').doc('app').set({ name: document.getElementById('s-name').value, upi: document.getElementById('s-upi').value }); alert("Settings Saved!"); }
         async function loadS() { 
             const s = await db.collection('settings').doc('app').get(); 
-            if(s.exists) { 
-                document.getElementById('s-name').value = s.data().name; 
-                document.getElementById('s-upi').value = s.data().upi; 
-            }
+            if(s.exists) { document.getElementById('s-name').value = s.data().name; document.getElementById('s-upi').value = s.data().upi; }
             db.collection('banners').onSnapshot(snap => { 
                 document.getElementById('b-list').innerHTML = snap.docs.map(doc => `
-                    <div class="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/5">
-                        <img src="${doc.data().url}" class="h-10 w-16 object-cover rounded-lg">
+                    <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5">
+                        <img src="${doc.data().url}" class="h-8 w-12 object-cover rounded-lg">
                         <button onclick="db.collection('banners').doc('${doc.id}').delete()" class="text-red-500 text-[10px] font-black uppercase">Remove</button>
                     </div>`).join(''); 
             });
         }
-
         async function addB() { 
             const url = document.getElementById('b-url').value;
             if(!url) return;
             const snap = await db.collection('banners').get(); 
-            if(snap.size < 5) { 
-                await db.collection('banners').add({url: url}); 
-                document.getElementById('b-url').value = ""; 
-                // Banner successful ga Firestore ki add ayyaka (Line 330 area)
-await sendPush("New Offers! 🎁", "Check out our latest festive banners and deals!");
-
-            } else alert("Max 5 Banners only!"); 
+            if(snap.size < 5) { await db.collection('banners').add({url: url}); document.getElementById('b-url').value = ""; } 
+            else alert("Max 5 Banners!"); 
         }
 
-        async function updateAdm() { 
-            const p = document.getElementById('adm-p').value; 
-            if(p) { 
-                await db.collection('users').doc('7989227698').update({pass: p}); 
-                alert("Security Credentials Updated! 🔐"); 
-                document.getElementById('adm-p').value = "";
-            } 
+        // --- UNIFIED PUSH LOGIC ---
+        async function autoPush(title, message) {
+            try {
+                await db.collection('notifications').add({
+                    title: title,
+                    body: message,
+                    time: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (e) { console.error("Push Error", e); }
+        }
+
+        async function manualPush() {
+            const t = document.getElementById('n-t').value;
+            const b = document.getElementById('n-b').value;
+            if(!t || !b) return alert("Enter Title & Message!");
+            await autoPush(t, b);
+            alert("Notification Sent! 🚀");
+            document.getElementById('n-t').value = ""; document.getElementById('n-b').value = "";
         }
 
         showSection('p');
-        async function sendPush(t, b) {
-    await db.collection('notifications').add({
-        title: t,
-        body: b,
-        time: Date.now() // Ikkada idi thappakunda undali
-    });
-}
-
-        async function sendPush() {
-    const t = document.getElementById('n-t').value;
-    const b = document.getElementById('n-b').value;
-    if(!t || !b) return alert("Please enter both Title and Message!");
-    
-    try {
-        await db.collection('notifications').add({
-            title: t,
-            body: b,
-            time: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        alert("Notification Sent Successfully! 🚀");
-        document.getElementById('n-t').value = "";
-        document.getElementById('n-b').value = "";
-    } catch (error) {
-        alert("Error sending notification: " + error.message);
-    }
-}
-async function sendPush(title, message) {
-    try {
-        await db.collection('notifications').add({
-            title: title,
-            body: message,
-            time: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        console.log("Push Notification Logged!");
-    } catch (e) {
-        console.error("Notification Error: ", e);
-    }
-}
-
     </script>
 </body>
 </html>
